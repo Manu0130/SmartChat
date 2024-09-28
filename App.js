@@ -13,6 +13,11 @@ export default function App() {
 
   const [getImage, setImage] = useState(null);;
 
+  const [getMobile, setMobile] = useState("");
+  const [getFirstName, setFirstName] = useState("");
+  const [getLastName, setLastName] = useState("");
+  const [getPassword, setPassword] = useState("");
+
   const [loaded, error] = useFonts(
     {
       "Montserrat-Bold": require('./assets/fonts/Montserrat-Bold.ttf'),
@@ -34,6 +39,9 @@ export default function App() {
   }
 
   const logoPath = require("./assets/favicon.png");
+
+
+
 
   return (
 
@@ -67,20 +75,77 @@ export default function App() {
           </Pressable>
 
           <Text style={stylesheet.text3}>Mobile</Text>
-          <TextInput style={stylesheet.input1} inputMode={"tel"} maxLength={10} />
+          <TextInput style={stylesheet.input1} inputMode={"tel"} maxLength={10} onChangeText={
+            (text) => {
+              setMobile(text);
+            }
+          } />
 
           <Text style={stylesheet.text3}>First Name</Text>
-          <TextInput style={stylesheet.input1} inputMode={"text"} />
+          <TextInput style={stylesheet.input1} inputMode={"text"} onChangeText={
+            (text) => {
+              setFirstName(text);
+            }
+          } />
 
           <Text style={stylesheet.text3}>Last Name</Text>
-          <TextInput style={stylesheet.input1} inputMode={"text"} />
+          <TextInput style={stylesheet.input1} inputMode={"text"} onChangeText={
+            (text) => {
+              setLastName(text);
+            }
+          } />
 
           <Text style={stylesheet.text3}>Password</Text>
-          <TextInput style={stylesheet.input1} secureTextEntry={true} inputMode={"text"} maxLength={20} />
+          <TextInput style={stylesheet.input1} secureTextEntry={true} inputMode={"text"} maxLength={20} onChangeText={
+            (text) => {
+              setPassword(text);
+            }
+          } />
 
           <Pressable style={stylesheet.pressable1} onPress={
-            () => {
-              Alert.alert("Message", "Go to Sign Up");
+            async () => {
+
+              let formData = new FormData();
+              formData.append("mobile", getMobile);
+              formData.append("firstName", getFirstName);
+              formData.append("lastName", getLastName);
+              formData.append("password", getPassword);
+
+              if (getImage != null) {
+                formData.append("avatarImage",
+                  {
+                    name: "avatar.png",
+                    type: "image/png",
+                    uri: getImage
+                  }
+                );
+              }
+
+
+
+              let response = await fetch(
+                "https://03ac-112-134-145-227.ngrok-free.app/SmartChat/ChatSignUp",
+                {
+                  method: "POST",
+                  body: formData
+                }
+              );
+
+              if (response.ok) {
+                let json = await response.json();
+                // Alert.alert("Response", json.message);
+
+                if (json.success) {
+                  //user registration complete
+                  Alert.alert("Success", json.message);
+                } else {
+                  //problem occured
+                  Alert.alert("Error", json.message);
+
+                }
+
+              }
+
             }
           }>
             <FontAwesome6 name={"right-to-bracket"} color={"white"} size={18} />
@@ -109,7 +174,7 @@ const stylesheet = StyleSheet.create(
     view1: {
       flex: 1,
       justifyContent: "center",
-      
+
     },
 
     image1: {
@@ -181,8 +246,8 @@ const stylesheet = StyleSheet.create(
     view2: {
       flex: 1,
       paddingHorizontal: 15,
-      paddingVertical:50,
-      
+      paddingVertical: 50,
+
       rowGap: 10,
 
     }
