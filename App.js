@@ -124,7 +124,7 @@ export default function App() {
 
 
               let response = await fetch(
-                "https://03ac-112-134-145-227.ngrok-free.app/SmartChat/ChatSignUp",
+                "https://34e4-112-134-147-83.ngrok-free.app/SmartChat/ChatSignUp",
                 {
                   method: "POST",
                   body: formData
@@ -174,6 +174,7 @@ const stylesheet = StyleSheet.create(
     view1: {
       flex: 1,
       justifyContent: "center",
+      paddingTop:60
 
     },
 
