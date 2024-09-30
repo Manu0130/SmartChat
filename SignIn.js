@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { registerRootComponent } from "expo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,7 +71,7 @@ function SignIn() {
                             if (getMobile.length == 10) {
                                 Alert.alert(getMobile);
 
-                                let response = await fetch("https://34e4-112-134-147-83.ngrok-free.app/SmartChat/GetLetters?mobile="+getMobile);
+                                let response = await fetch("https://9dd2-112-134-145-56.ngrok-free.app/SmartChat/GetLetters?mobile="+getMobile);
 
                                 if (response.ok) {
                                     let json = await response.json();
@@ -100,7 +101,7 @@ function SignIn() {
                             formData.append("password", getPassword);
 
                             let response = await fetch(
-                                "https://34e4-112-134-147-83.ngrok-free.app/SmartChat/ChatSignIn",
+                                "https://9dd2-112-134-145-56.ngrok-free.app/SmartChat/ChatSignIn",
 
                                 {
                                     method: "POST",
@@ -125,6 +126,17 @@ function SignIn() {
 
                                     let user = json.user; //එන user ව අපිට ගන්න පුලුවන්.
                                     Alert.alert("Success", "Hi " + user.first_name + ", " + json.message);
+
+                                    try {
+                                        
+                                        await AsyncStorage.setItem("user", JSON.stringify(user));
+
+                                    } catch (e) {
+                                        
+                                        Alert.alert("Error", "Something went wrong");
+
+                                    }
+
                                 } else {
                                     //problem occured
                                     Alert.alert("Error", json.message);
@@ -247,5 +259,5 @@ const stylesheet = StyleSheet.create(
             fontFamily: "Montserrat-Bold",
             color: "blue"
         },
-    }
+    } 
 );

@@ -1,7 +1,7 @@
 {
   "name": "smartchat",
   "version": "1.0.0",
-  "main": "./SignIn.js",
+  "main": "./Home.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -18,7 +18,8 @@
     "expo-splash-screen": "~0.27.6",
     "expo-linear-gradient": "~13.0.2",
     "expo-image": "~1.13.0",
-    "expo-image-picker": "~15.0.7"
+    "expo-image-picker": "~15.0.7",
+    "@react-native-async-storage/async-storage": "1.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

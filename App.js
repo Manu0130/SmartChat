@@ -11,7 +11,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
 
-  const [getImage, setImage] = useState(null);;
+  const [getImage, setImage] = useState(null);
 
   const [getMobile, setMobile] = useState("");
   const [getFirstName, setFirstName] = useState("");
@@ -124,7 +124,7 @@ export default function App() {
 
 
               let response = await fetch(
-                "https://34e4-112-134-147-83.ngrok-free.app/SmartChat/ChatSignUp",
+                "https://9dd2-112-134-145-56.ngrok-free.app/SmartChat/ChatSignUp",
                 {
                   method: "POST",
                   body: formData
