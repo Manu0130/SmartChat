@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
-import { registerRootComponent } from "expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
-function SignIn() {
+export default function index() {
 
     const [getMobile, setMobile] = useState("");
     const [getPassword, setPassword] = useState("");
@@ -20,14 +20,32 @@ function SignIn() {
 
     const [loaded, error] = useFonts(
         {
-            "Montserrat-Bold": require('./assets/fonts/Montserrat-Bold.ttf'),
-            "Montserrat-Light": require('./assets/fonts/Montserrat-Light.ttf'),
-            "Montserrat-Regular": require('./assets/fonts/Montserrat-Regular.ttf'),
+            "Montserrat-Bold": require('../assets/fonts/Montserrat-Bold.ttf'),
+            "Montserrat-Light": require('../assets/fonts/Montserrat-Light.ttf'),
+            "Montserrat-Regular": require('../assets/fonts/Montserrat-Regular.ttf'),
         }
     );
 
     useEffect(
         () => {
+
+            async function checkUserInAsyncStorage() {
+                try {
+                    let userJson = await AsyncStorage.getItem("user");
+                    if (userJson != null) {
+                        router.replace("/home");
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            checkUserInAsyncStorage();
+        },[]
+    );
+
+    useEffect(
+        () => {
+
             if (loaded || error) {
                 SplashScreen.hideAsync();
             }
@@ -35,17 +53,16 @@ function SignIn() {
     );
 
     if (!loaded && !error) {
+
         return null;
     }
 
-    const logoPath = require("./assets/favicon.png");
-
-
-
+    const logoPath = require("../assets/favicon.png");
 
     return (
 
         <LinearGradient colors={['#CAF4FF', '#A0DEFF', '#5AB2FF']} style={stylesheet.view1}>
+
 
             <ScrollView >
 
@@ -71,7 +88,7 @@ function SignIn() {
                             if (getMobile.length == 10) {
                                 Alert.alert(getMobile);
 
-                                let response = await fetch("https://9dd2-112-134-145-56.ngrok-free.app/SmartChat/GetLetters?mobile="+getMobile);
+                                let response = await fetch("https://1ce8-112-134-149-139.ngrok-free.app/SmartChat/GetLetters?mobile=" + getMobile);
 
                                 if (response.ok) {
                                     let json = await response.json();
@@ -101,7 +118,7 @@ function SignIn() {
                             formData.append("password", getPassword);
 
                             let response = await fetch(
-                                "https://9dd2-112-134-145-56.ngrok-free.app/SmartChat/ChatSignIn",
+                                "https://1ce8-112-134-149-139.ngrok-free.app/SmartChat/ChatSignIn",
 
                                 {
                                     method: "POST",
@@ -125,14 +142,14 @@ function SignIn() {
                                     //user sign in complete
 
                                     let user = json.user; //එන user ව අපිට ගන්න පුලුවන්.
-                                    Alert.alert("Success", "Hi " + user.first_name + ", " + json.message);
 
                                     try {
-                                        
+
                                         await AsyncStorage.setItem("user", JSON.stringify(user));
+                                        router.replace("/home");
 
                                     } catch (e) {
-                                        
+
                                         Alert.alert("Error", "Something went wrong");
 
                                     }
@@ -153,7 +170,7 @@ function SignIn() {
 
                     <Pressable style={stylesheet.pressable2} onPress={
                         () => {
-                            Alert.alert("Message", "Go to Sign Up");
+                            router.replace("/signup");
                         }
                     }>
                         <Text style={stylesheet.text2}>New User? Go to Sign Up</Text>
@@ -167,8 +184,6 @@ function SignIn() {
 
     );
 }
-
-registerRootComponent(SignIn);
 
 const stylesheet = StyleSheet.create(
     {
@@ -259,5 +274,5 @@ const stylesheet = StyleSheet.create(
             fontFamily: "Montserrat-Bold",
             color: "blue"
         },
-    } 
+    }
 );

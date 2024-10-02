@@ -6,10 +6,12 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function App() {
+export default function signup() {
 
   const [getImage, setImage] = useState(null);
 
@@ -20,9 +22,9 @@ export default function App() {
 
   const [loaded, error] = useFonts(
     {
-      "Montserrat-Bold": require('./assets/fonts/Montserrat-Bold.ttf'),
-      "Montserrat-Light": require('./assets/fonts/Montserrat-Light.ttf'),
-      "Montserrat-Regular": require('./assets/fonts/Montserrat-Regular.ttf'),
+      "Montserrat-Bold": require('../assets/fonts/Montserrat-Bold.ttf'),
+      "Montserrat-Light": require('../assets/fonts/Montserrat-Light.ttf'),
+      "Montserrat-Regular": require('../assets/fonts/Montserrat-Regular.ttf'),
     }
   );
 
@@ -38,7 +40,7 @@ export default function App() {
     return null;
   }
 
-  const logoPath = require("./assets/favicon.png");
+  const logoPath = require("../assets/favicon.png");
 
 
 
@@ -46,7 +48,12 @@ export default function App() {
   return (
 
     <LinearGradient colors={['#CAF4FF', '#A0DEFF', '#5AB2FF']} style={stylesheet.view1}>
-
+      <StatusBar
+      hidden={true}
+        animated={true}
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <ScrollView >
 
         <View style={stylesheet.view2}>
@@ -124,7 +131,7 @@ export default function App() {
 
 
               let response = await fetch(
-                "https://9dd2-112-134-145-56.ngrok-free.app/SmartChat/ChatSignUp",
+                "https://1ce8-112-134-149-139.ngrok-free.app/SmartChat/ChatSignUp",
                 {
                   method: "POST",
                   body: formData
@@ -137,7 +144,7 @@ export default function App() {
 
                 if (json.success) {
                   //user registration complete
-                  Alert.alert("Success", json.message);
+                  router.replace("/");
                 } else {
                   //problem occured
                   Alert.alert("Error", json.message);
@@ -154,7 +161,7 @@ export default function App() {
 
           <Pressable style={stylesheet.pressable2} onPress={
             () => {
-              Alert.alert("Message", "Go to Sign In");
+              router.replace("/");
             }
           }>
             <Text style={stylesheet.text2}>Already Registered? Go to Sign In</Text>
@@ -174,7 +181,7 @@ const stylesheet = StyleSheet.create(
     view1: {
       flex: 1,
       justifyContent: "center",
-      paddingTop:60
+      paddingTop: 60
 
     },
 

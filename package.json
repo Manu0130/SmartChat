@@ -1,7 +1,7 @@
 {
   "name": "smartchat",
   "version": "1.0.0",
-  "main": "./Home.js",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -19,7 +19,8 @@
     "expo-linear-gradient": "~13.0.2",
     "expo-image": "~1.13.0",
     "expo-image-picker": "~15.0.7",
-    "@react-native-async-storage/async-storage": "1.23.1"
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "expo-router": "~3.5.23"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

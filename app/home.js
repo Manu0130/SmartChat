@@ -5,14 +5,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useEffect, useState } from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
-function Home() {
+export default function home() {
 
     const [loaded, error] = useFonts(
         {
-            "Montserrat-Bold": require('./assets/fonts/Montserrat-Bold.ttf'),
-            "Montserrat-Light": require('./assets/fonts/Montserrat-Light.ttf'),
-            "Montserrat-Regular": require('./assets/fonts/Montserrat-Regular.ttf'),
+            "Montserrat-Bold": require('../assets/fonts/Montserrat-Bold.ttf'),
+            "Montserrat-Light": require('../assets/fonts/Montserrat-Light.ttf'),
+            "Montserrat-Regular": require('../assets/fonts/Montserrat-Regular.ttf'),
         }
     );
 
@@ -30,6 +31,13 @@ function Home() {
 
     return (
         <LinearGradient colors={['#CAF4FF', '#A0DEFF', '#5AB2FF']} style={stylesheet.view1}>
+
+            <StatusBar
+                animated={true}
+                translucent={true}
+                backgroundColor="transparent"
+            />
+
             <View style={stylesheet.view2}>
                 <View style={stylesheet.view3}></View>
 
@@ -49,8 +57,8 @@ function Home() {
                         <Text style={stylesheet.text4}>Hi! Sahan</Text>
 
                         <View style={stylesheet.view7}>
-                        <Text style={stylesheet.text5}>Last Seen at 8.40 a.m.</Text>
-                        <FontAwesome6 name={"check"} color={"gray"} size={20} />                            
+                            <Text style={stylesheet.text5}>Last Seen at 8.40 a.m.</Text>
+                            <FontAwesome6 name={"check"} color={"gray"} size={20} />
                         </View>
 
                     </View>
@@ -63,8 +71,8 @@ function Home() {
                         <Text style={stylesheet.text4} numberOfLines={1}>Hi! Sahan. I need some help from you. Can you help me?</Text>
 
                         <View style={stylesheet.view7}>
-                        <Text style={stylesheet.text5}>Last Seen at 8.40 a.m.</Text>
-                        <FontAwesome6 name={"check"} color={"green"} size={20} />                            
+                            <Text style={stylesheet.text5}>Last Seen at 8.40 a.m.</Text>
+                            <FontAwesome6 name={"check"} color={"green"} size={20} />
                         </View>
 
                     </View>
@@ -75,8 +83,6 @@ function Home() {
         </LinearGradient>
     );
 }
-
-registerRootComponent(Home);
 
 const stylesheet = StyleSheet.create(
     {
@@ -90,11 +96,11 @@ const stylesheet = StyleSheet.create(
         view2: {
             flexDirection: "row",
             columnGap: 20,
-            padding:10,
-            backgroundColor:"#5dade2",
-            borderBottomColor:"black",
-            borderBottomWidth:2,
-            borderRadius:10,
+            padding: 10,
+            backgroundColor: "#5dade2",
+            borderBottomColor: "black",
+            borderBottomWidth: 2,
+            borderRadius: 10,
         },
         view3: {
             width: 80,
@@ -151,8 +157,8 @@ const stylesheet = StyleSheet.create(
         view7: {
             flexDirection: "row",
             columnGap: 20,
-            alignSelf:"flex-end",
-            alignItems:"center",
+            alignSelf: "flex-end",
+            alignItems: "center",
         },
     }
 );
