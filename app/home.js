@@ -1,13 +1,19 @@
 import { registerRootComponent } from "expo";
 import { LinearGradient } from "expo-linear-gradient";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useEffect, useState } from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FlashList } from "@shopify/flash-list";
+import { Image } from "expo-image";
+import { router } from "expo-router";
 
 export default function home() {
+
+    const [getChatArray, setChatArray] = useState([]);
 
     const [loaded, error] = useFonts(
         {
@@ -15,6 +21,35 @@ export default function home() {
             "Montserrat-Light": require('../assets/fonts/Montserrat-Light.ttf'),
             "Montserrat-Regular": require('../assets/fonts/Montserrat-Regular.ttf'),
         }
+    );
+
+    useEffect(
+        () => {
+            async function fetchData() {
+
+                let userJson = await AsyncStorage.getItem("user");
+                let user = JSON.parse(userJson); //json කරපු එක js object එකක් කරගන්නවා.
+
+                let response = await fetch("https://c187-112-134-149-139.ngrok-free.app/SmartChat/LoadHomeData?id=" + user.id);
+
+                if (response.ok) {
+                    let json = await response.json();
+                    // console.log(json);
+
+                    if (json.success) {
+                        let chatArray = json.jsonChatArray;
+                        console.log(chatArray);
+                        setChatArray(chatArray);
+                        //FlashList
+
+
+                    }
+                }
+
+            }
+
+            fetchData();
+        }, []
     );
 
     useEffect(
@@ -38,47 +73,47 @@ export default function home() {
                 backgroundColor="transparent"
             />
 
-            <View style={stylesheet.view2}>
-                <View style={stylesheet.view3}></View>
+            <FlashList
 
-                <View style={stylesheet.view4}>
-                    <Text style={stylesheet.text1}>Sahan Perera</Text>
-                    <Text style={stylesheet.text2}>0711111111</Text>
-                    <Text style={stylesheet.text3}>Since, September 2024</Text>
-                </View>
+                data={getChatArray}
+                renderItem={
+                    ({ item }) =>
 
-            </View>
-            <ScrollView style={stylesheet.scrollview1}>
+                        <Pressable style={stylesheet.view5} onPress={
+                            ()=>{
+                                Alert.alert("View CHat","User:"+ item.other_user_id);
+                                router.push("/chat");
+                            }
+                        }>
 
-                <View style={stylesheet.view5}>
-                    <View style={stylesheet.view6}></View>
-                    <View style={stylesheet.view4}>
-                        <Text style={stylesheet.text1}>Kavindu Sahan</Text>
-                        <Text style={stylesheet.text4}>Hi! Sahan</Text>
+                            <View style={item.other_user_status == 1 ? stylesheet.view6_2 : stylesheet.view6_1}>
+                                {
+                                    item.avatar_image_found ?
+                                        <Image 
+                                        style={stylesheet.image1} 
+                                        contentFit="contain"
+                                        source={"https://c187-112-134-149-139.ngrok-free.app/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"} />
+                                        :
+                                        <Text style={stylesheet.text6}>{item.other_user_avatar_letters}</Text>
+                                }
+                            </View>
 
-                        <View style={stylesheet.view7}>
-                            <Text style={stylesheet.text5}>Last Seen at 8.40 a.m.</Text>
-                            <FontAwesome6 name={"check"} color={"gray"} size={20} />
-                        </View>
+                            <View style={stylesheet.view4}>
+                                <Text style={stylesheet.text1}>{item.other_user_name}</Text>
+                                <Text style={stylesheet.text4} numberOfLines={1}>{item.message}</Text>
 
-                    </View>
-                </View>
+                                <View style={stylesheet.view7}>
+                                    <Text style={stylesheet.text5}>{item.dateTime}</Text>
+                                    <FontAwesome6 name={"check"} color={item.chat_status_id == 1 ? "green" : "gray"} size={20} />
+                                </View>
 
-                <View style={stylesheet.view5}>
-                    <View style={stylesheet.view6}></View>
-                    <View style={stylesheet.view4}>
-                        <Text style={stylesheet.text1}>Kavindu Sahan</Text>
-                        <Text style={stylesheet.text4} numberOfLines={1}>Hi! Sahan. I need some help from you. Can you help me?</Text>
+                            </View>
 
-                        <View style={stylesheet.view7}>
-                            <Text style={stylesheet.text5}>Last Seen at 8.40 a.m.</Text>
-                            <FontAwesome6 name={"check"} color={"green"} size={20} />
-                        </View>
+                        </Pressable>
 
-                    </View>
-                </View>
-
-            </ScrollView>
+                }
+                estimatedItemSize={200}
+            />
 
         </LinearGradient>
     );
@@ -130,14 +165,27 @@ const stylesheet = StyleSheet.create(
             marginVertical: 10,
             columnGap: 20,
         },
-        view6: {
+        view6_1: {
             width: 80,
             height: 80,
             borderRadius: 40,
             backgroundColor: "white",
             borderStyle: "dotted",
             borderWidth: 5,
-            borderColor: "red"
+            borderColor: "red",
+            justifyContent: "center",
+            alignItems: "center"
+        },
+        view6_2: {
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            backgroundColor: "white",
+            borderStyle: "dotted",
+            borderWidth: 5,
+            borderColor: "green",
+            justifyContent: "center",
+            alignItems: "center"
         },
         text4: {
             fontFamily: "Montserrat-Regular",
@@ -150,6 +198,10 @@ const stylesheet = StyleSheet.create(
             fontSize: 14,
             alignSelf: "flex-end",
         },
+        text6: {
+            fontFamily: "Montserrat-Bold",
+            fontSize: 24,
+        },
         scrollview1: {
             marginTop: 20,
 
@@ -160,5 +212,15 @@ const stylesheet = StyleSheet.create(
             alignSelf: "flex-end",
             alignItems: "center",
         },
+        //35
+        image1:{
+            width: 70,
+            height: 70,
+            borderRadius: 40,
+            // backgroundColor: "white",
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center"
+        }
     }
 );
