@@ -1,6 +1,6 @@
 import { registerRootComponent } from "expo";
 import { LinearGradient } from "expo-linear-gradient";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useEffect, useState } from "react";
@@ -14,6 +14,9 @@ import { router } from "expo-router";
 export default function home() {
 
     const [getChatArray, setChatArray] = useState([]);
+    const [getSearchQuery, setSearchQuery] = useState(''); // State for search query
+    const [getFilteredChatArray, setFilteredChatArray] = useState([]); // State for filtered chat data
+
 
     const [loaded, error] = useFonts(
         {
@@ -30,7 +33,7 @@ export default function home() {
                 let userJson = await AsyncStorage.getItem("user");
                 let user = JSON.parse(userJson); //json කරපු එක js object එකක් කරගන්නවා.
 
-                let response = await fetch("https://c187-112-134-149-139.ngrok-free.app/SmartChat/LoadHomeData?id=" + user.id);
+                let response = await fetch("https://65ce-112-134-149-139.ngrok-free.app/SmartChat/LoadHomeData?id=" + user.id);
 
                 if (response.ok) {
                     let json = await response.json();
@@ -41,8 +44,6 @@ export default function home() {
                         console.log(chatArray);
                         setChatArray(chatArray);
                         //FlashList
-
-
                     }
                 }
 
@@ -51,6 +52,16 @@ export default function home() {
             fetchData();
         }, []
     );
+
+
+    // Search handler to filter chatArray based on search query
+    useEffect(() => {
+        const filtered = getChatArray.filter(item =>
+            item.other_user_name.toLowerCase().includes(getSearchQuery.toLowerCase())
+        );
+        setFilteredChatArray(filtered);
+    }, [getSearchQuery, getChatArray]);
+
 
     useEffect(
         () => {
@@ -64,6 +75,8 @@ export default function home() {
         return null;
     }
 
+
+
     return (
         <LinearGradient colors={['#CAF4FF', '#A0DEFF', '#5AB2FF']} style={stylesheet.view1}>
 
@@ -73,26 +86,43 @@ export default function home() {
                 backgroundColor="transparent"
             />
 
+            <TextInput
+                style={stylesheet.searchBar}
+                placeholder="Search..."
+                value={getSearchQuery}
+                onChangeText={setSearchQuery}
+            />
+
+            <Button title="Test" onPress={
+                () => { router.push("/test") }
+            } />
+
             <FlashList
 
-                data={getChatArray}
+                data={getFilteredChatArray}
                 renderItem={
                     ({ item }) =>
 
                         <Pressable style={stylesheet.view5} onPress={
-                            ()=>{
-                                Alert.alert("View CHat","User:"+ item.other_user_id);
-                                router.push("/chat");
+                            () => {
+                                // Alert.alert("View CHat", "User:" + item.other_user_id);
+
+                                router.push(
+                                    {
+                                        pathname: "/chat",
+                                        params: item
+                                    }
+                                );
                             }
                         }>
 
                             <View style={item.other_user_status == 1 ? stylesheet.view6_2 : stylesheet.view6_1}>
                                 {
                                     item.avatar_image_found ?
-                                        <Image 
-                                        style={stylesheet.image1} 
-                                        contentFit="contain"
-                                        source={"https://c187-112-134-149-139.ngrok-free.app/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"} />
+                                        <Image
+                                            style={stylesheet.image1}
+                                            contentFit="contain"
+                                            source={" https://65ce-112-134-149-139.ngrok-free.app/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"} />
                                         :
                                         <Text style={stylesheet.text6}>{item.other_user_avatar_letters}</Text>
                                 }
@@ -127,7 +157,14 @@ const stylesheet = StyleSheet.create(
             paddingHorizontal: 20,
 
         },
-
+        searchBar: {
+            height: 40,
+            borderColor: 'gray',
+            borderWidth: 1,
+            marginBottom: 10,
+            paddingHorizontal: 10,
+            borderRadius: 5,
+        },
         view2: {
             flexDirection: "row",
             columnGap: 20,
@@ -213,7 +250,7 @@ const stylesheet = StyleSheet.create(
             alignItems: "center",
         },
         //35
-        image1:{
+        image1: {
             width: 70,
             height: 70,
             borderRadius: 40,
