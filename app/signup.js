@@ -131,7 +131,7 @@ export default function signup() {
 
 
               let response = await fetch(
-                "https://65ce-112-134-149-139.ngrok-free.app/SmartChat/ChatSignUp",
+                process.env.EXPO_PUBLIC_URL+"/SmartChat/ChatSignUp",
                 {
                   method: "POST",
                   body: formData

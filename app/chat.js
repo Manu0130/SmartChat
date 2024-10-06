@@ -49,7 +49,7 @@ export default function chat() {
                 let user = JSON.parse(userJson); //json කරපු එක js object එකක් කරගන්නවා.
                 console.log(user.id);
 
-                let response = await fetch("https://65ce-112-134-149-139.ngrok-free.app/SmartChat/LoadChat?logged_user_id=" + user.id + "&other_user_id=" + item.other_user_id);
+                let response = await fetch(process.env.EXPO_PUBLIC_URL+"/SmartChat/LoadChat?logged_user_id=" + user.id + "&other_user_id=" + item.other_user_id);
                 if (response.ok) {
                     let chatArray = await response.json();
                     console.log(chatArray);
@@ -78,7 +78,7 @@ export default function chat() {
                     {
                         item.avatar_image_found == "true"
                             ? <Image style={stylesheet.image1}
-                                source={"https://65ce-112-134-149-139.ngrok-free.app/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"}
+                                source={process.env.EXPO_PUBLIC_URL+"/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"}
                                 contentFit={"contain"} />
                             : <Text style={stylesheet.text1}>{item.other_user_avatar_letters}</Text>
                     }
@@ -136,7 +136,7 @@ export default function chat() {
                             let userJson = await AsyncStorage.getItem("user");
                             let user = JSON.parse(userJson);
 
-                            let response = await fetch("https://65ce-112-134-149-139.ngrok-free.app/SmartChat/SendChat?logged_user_id=" + user.id + "&other_user_id=" + item.other_user_id + "&message=" + getChatText);
+                            let response = await fetch(process.env.EXPO_PUBLIC_URL+"/SmartChat/SendChat?logged_user_id=" + user.id + "&other_user_id=" + item.other_user_id + "&message=" + getChatText);
 
                             if (response.ok) {
                                 let json = await response.json();

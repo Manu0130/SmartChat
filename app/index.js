@@ -88,7 +88,7 @@ export default function index() {
                             if (getMobile.length == 10) {
                                 Alert.alert(getMobile);
 
-                                let response = await fetch("https://65ce-112-134-149-139.ngrok-free.app/SmartChat/GetLetters?mobile=" + getMobile);
+                                let response = await fetch(process.env.EXPO_PUBLIC_URL+"/SmartChat/GetLetters?mobile=" + getMobile);
 
                                 if (response.ok) {
                                     let json = await response.json();
@@ -118,7 +118,7 @@ export default function index() {
                             formData.append("password", getPassword);
 
                             let response = await fetch(
-                                "https://65ce-112-134-149-139.ngrok-free.app/SmartChat/ChatSignIn",
+                                process.env.EXPO_PUBLIC_URL+"/SmartChat/ChatSignIn",
 
                                 {
                                     method: "POST",

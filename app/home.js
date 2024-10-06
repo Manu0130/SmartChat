@@ -33,7 +33,7 @@ export default function home() {
                 let userJson = await AsyncStorage.getItem("user");
                 let user = JSON.parse(userJson); //json කරපු එක js object එකක් කරගන්නවා.
 
-                let response = await fetch("https://65ce-112-134-149-139.ngrok-free.app/SmartChat/LoadHomeData?id=" + user.id);
+                let response = await fetch(process.env.EXPO_PUBLIC_URL+"/SmartChat/SmartChatLoadHomeData?id=" + user.id);
 
                 if (response.ok) {
                     let json = await response.json();
@@ -122,7 +122,7 @@ export default function home() {
                                         <Image
                                             style={stylesheet.image1}
                                             contentFit="contain"
-                                            source={" https://65ce-112-134-149-139.ngrok-free.app/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"} />
+                                            source={process.env.EXPO_PUBLIC_URL+"/SmartChat/AvatarImages/" + item.other_user_mobile + ".png"} />
                                         :
                                         <Text style={stylesheet.text6}>{item.other_user_avatar_letters}</Text>
                                 }
